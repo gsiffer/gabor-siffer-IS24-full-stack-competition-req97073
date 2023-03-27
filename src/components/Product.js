@@ -1,6 +1,6 @@
 import React from "react";
-import PencilSquare from "@/components/icons/PencilSquare";
-import Trash from "@/components/icons/Trash";
+import PencilSquareIcon from "@/components/icons/PencilSquareIcon";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const Product = ({ product, handleClickEdit, handleClickDelete }) => {
   return (
@@ -20,13 +20,13 @@ const Product = ({ product, handleClickEdit, handleClickDelete }) => {
         <td className="text-center">{product.startDate}</td>
         <td className="text-center">{product.methodology}</td>
         <td className="text-center">
-          <button onClick={() => handleClickEdit(product.productId)}>
-            <PencilSquare title="Edit product" />
+          <button onClick={() => handleClickEdit(product)}>
+            <PencilSquareIcon title="Edit product" />
           </button>
         </td>
         <td className="text-center">
           <button onClick={() => handleClickDelete(product.productId)}>
-            <Trash title="Delete product" />
+            <TrashIcon title="Delete product" />
           </button>
         </td>
       </tr>

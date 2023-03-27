@@ -6,16 +6,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Product from "@/components/Product";
 import SlidingPanel from "@/components/SlidingPanel";
-import Close from "@/components/icons/Close";
+import CloseIcon from "@/components/icons/CloseIcon";
 
 const Products = () => {
   const MAX_DEVELOPERS = 5;
-  const [products, setProducts] = useState([]);
-  const [isPanelSlide, setIsPanelSlide] = useState(false);
-  const [isNewProduct, setIsNewProduct] = useState(false);
-  const [isEditProduct, setIsEditProduct] = useState(false);
-
-  const [formData, setFormData] = useState({
+  const EMPTY_PRODUCT = {
     productId: 0,
     productName: "",
     productOwnerName: "",
@@ -23,7 +18,13 @@ const Products = () => {
     scrumMasterName: "",
     startDate: "",
     methodology: "",
-  });
+  };
+  const [products, setProducts] = useState([]);
+  const [isPanelSlide, setIsPanelSlide] = useState(false);
+  const [isNewProduct, setIsNewProduct] = useState(false);
+  const [isEditProduct, setIsEditProduct] = useState(false);
+  const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const [formData, setFormData] = useState(EMPTY_PRODUCT);
 
   const methodologies = [
     { value: "Agile", label: "Agile" },
@@ -93,6 +94,17 @@ const Products = () => {
     setProducts([...products, data]);
   };
 
+  const deleteProduct = async (id) => {
+    console.log(id);
+    const response = await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    // setTasks(tasks.filter((task) => task.id !== id));
+  };
+
   const handleChangeDevelopers = (e) => {
     setFormData({
       ...formData,
@@ -122,11 +134,15 @@ const Products = () => {
 
   const handleClickCancel = (e) => {
     e.preventDefault();
+    clearFormData();
+  };
+
+  const clearFormData = () => {
     setIsPanelSlide(false);
     setIsNewProduct(false);
     setIsEditProduct(false);
-
-    // Object.keys(formData).map((item, index) => console.log(formData[item]));
+    setIsSaveClicked(false);
+    setFormData(EMPTY_PRODUCT);
   };
 
   const handleClickNewProduct = () => {
@@ -146,27 +162,47 @@ const Products = () => {
     return Math.max(...productIds) + 1;
   };
 
-  const handleClickEditProduct = (id) => {
+  const handleClickEditProduct = (product) => {
     setIsPanelSlide(true);
     setIsEditProduct(true);
-    console.log(id);
+    setFormData(product);
   };
 
   const handleClickSave = (e) => {
     e.preventDefault();
+    setIsSaveClicked(true);
 
-    setIsPanelSlide(false);
-    setIsNewProduct(false);
-    setIsEditProduct(false);
+    if (formValidation()) {
+      addProduct(formData);
+      clearFormData();
+    }
+  };
 
-    addProduct(formData);
+  const formValidation = () => {
+    if (
+      formData.productName.trim().length === 0 ||
+      formData.productOwnerName.length === 0 ||
+      formData.developers.length === 0 ||
+      formData.scrumMasterName.length === 0 ||
+      formData.startDate.length === 0 ||
+      formData.methodology.length === 0
+    ) {
+      return false;
+    }
+    return true;
   };
 
   const handleClickDeleteProduct = (id) => {
+    deleteProduct(id);
     console.log(id);
   };
 
-  const setProductToEmpty = () => {};
+  const dropDownValidationStyle = {
+    control: (base, state) => ({
+      ...base,
+      borderColor: "red",
+    }),
+  };
 
   return (
     <>
@@ -220,7 +256,7 @@ const Products = () => {
                 "
             onClick={handleClickCancel}
           >
-            <Close />
+            <CloseIcon />
           </button>
         </div>
         {/* Form elements to add or edit a product */}
@@ -236,12 +272,21 @@ const Products = () => {
               disabled
             ></input>
           </div>
+
           {/* Product Name input field */}
           <div className="flex flex-col">
-            <label>Product Name</label>
+            <div className="flex">
+              <label>Product Name</label>
+              <span className="text-red-500">*</span>
+            </div>
             <input
-              className="border rounded h-[36px]"
+              className={`border rounded h-[36px] ${
+                isSaveClicked &&
+                formData.productName.trim().length === 0 &&
+                "border-red-500"
+              }`}
               type="text"
+              value={formData.productName}
               placeholder="Product Name"
               onChange={(e) =>
                 setFormData({ ...formData, productName: e.target.value })
@@ -250,8 +295,17 @@ const Products = () => {
           </div>
           {/* Product Owner drop-down list */}
           <div>
-            <label>Product Owner</label>
+            <div className="flex">
+              <label>Product Owner</label>
+              <span className="text-red-500">*</span>
+            </div>
+
             <Select
+              styles={
+                isSaveClicked &&
+                formData.productOwnerName.length === 0 &&
+                dropDownValidationStyle
+              }
               id="long-value-select"
               instanceId="long-value-select"
               options={productOwners}
@@ -263,10 +317,20 @@ const Products = () => {
               }
             />
           </div>
+
           {/* Developers drop-down list */}
           <div>
-            <label>Developers</label>
+            <div className="flex">
+              <label>Developers</label>
+              <span className="text-red-500">*</span>
+            </div>
+
             <Select
+              styles={
+                isSaveClicked &&
+                formData.developers.length === 0 &&
+                dropDownValidationStyle
+              }
               id="long-value-select"
               instanceId="long-value-select"
               className="dropdown"
@@ -284,10 +348,20 @@ const Products = () => {
               isClearable
             />
           </div>
+
           {/* Scrum Master drop-down list */}
           <div>
-            <label>Scrum Master</label>
+            <div className="flex">
+              <label>Scrum Master</label>
+              <span className="text-red-500">*</span>
+            </div>
+
             <Select
+              styles={
+                isSaveClicked &&
+                formData.scrumMasterName.length === 0 &&
+                dropDownValidationStyle
+              }
               id="long-value-select"
               instanceId="long-value-select"
               options={scrumMasters}
@@ -299,11 +373,20 @@ const Products = () => {
               }
             />
           </div>
+
           {/* Start Date date picker */}
           <div>
-            <label>Start Date</label>
+            <div className="flex">
+              <label>Start Date</label>
+              <span className="text-red-500">*</span>
+            </div>
+
             <DatePicker
-              className="border h-[36px] rounded w-full"
+              className={`border h-[36px] rounded w-full ${
+                isSaveClicked &&
+                formData.startDate.length === 0 &&
+                "border-red-500"
+              }`}
               selected={Date.parse(formData.startDate)}
               onChange={(date) => {
                 handleChangeStartDate(date);
@@ -311,15 +394,26 @@ const Products = () => {
               dateFormat="yyyy/MM/dd"
               // minDate={new Date()}
               placeholderText={"Select..."}
-              isClearable
+              isClearable={isEditProduct ? false : true}
               showYearDropdown
               scrollableMonthYearDropdown
+              disabled={isEditProduct ? true : false}
             />
           </div>
+
           {/* Methodology drop-down list */}
           <div>
-            <label>Methodology</label>
+            <div className="flex">
+              <label>Methodology</label>
+              <span className="text-red-500">*</span>
+            </div>
+
             <Select
+              styles={
+                isSaveClicked &&
+                formData.methodology.length === 0 &&
+                dropDownValidationStyle
+              }
               id="long-value-select"
               instanceId="long-value-select"
               options={methodologies}
