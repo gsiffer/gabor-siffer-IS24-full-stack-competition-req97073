@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Product from "@/components/Product";
 import SlidingPanel from "@/components/SlidingPanel";
 import CloseIcon from "@/components/icons/CloseIcon";
+import { createId } from "@/helper";
 
 const Products = () => {
   const MAX_DEVELOPERS = 5;
@@ -20,54 +21,22 @@ const Products = () => {
     methodology: "",
   };
   const [products, setProducts] = useState([]);
+  const [developers, setDevelopers] = useState([]);
+  const [scrumMasters, setScrumMasters] = useState([]);
+  const [productOwners, setProductOwners] = useState([]);
   const [isPanelSlide, setIsPanelSlide] = useState(false);
   const [isNewProduct, setIsNewProduct] = useState(false);
   const [isEditProduct, setIsEditProduct] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const [formData, setFormData] = useState(EMPTY_PRODUCT);
+  const [filteredScrumMaster, setFilteredScrumMaster] = useState("");
+  const [filteredDeveloper, setFilteredDeveloper] = useState("");
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const methodologies = [
     { value: "Agile", label: "Agile" },
     { value: "Waterfall", label: "Waterfall" },
-  ];
-
-  const developers = [
-    {
-      value: "Dave Dev",
-      label: "Dave Dev",
-    },
-    {
-      value: "Gabor Dev",
-      label: "Gabor Dev",
-    },
-    {
-      value: "Kristin Dev",
-      label: "kristin Dev",
-    },
-    {
-      value: "Tristan Dev",
-      label: "Tristan Dev",
-    },
-    {
-      value: "Chris Dev",
-      label: "Chris Dev",
-    },
-    {
-      value: "Steve Dev",
-      label: "Steve Dev",
-    },
-  ];
-
-  const scrumMasters = [
-    { value: "Steve Master", label: "Steve Master" },
-    { value: "Bob Master", label: "Bob Master" },
-    { value: "Gabor Master", label: "Gabor Master" },
-  ];
-
-  const productOwners = [
-    { value: "Steve Owners", label: "Steve Owners" },
-    { value: "Bob Owners", label: "Bob Owners" },
-    { value: "Gabor Owners", label: "Gabor Owners" },
   ];
 
   useEffect(() => {
@@ -78,31 +47,80 @@ const Products = () => {
     getProducts();
   }, []);
 
+  useEffect(() => {
+    const getEmployees = async () => {
+      const res = await fetchEmployees();
+      setDevelopers(res[0].developers);
+      setScrumMasters(res[0].scrumMasters);
+      setProductOwners(res[0].productOwners);
+    };
+    getEmployees();
+  }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [filteredScrumMaster, filteredDeveloper, products]);
+
   const fetchProducts = async () => {
     const res = await fetch("http://localhost:3000/api/products");
     const data = await res.json();
     return data;
   };
 
+  const fetchEmployees = async () => {
+    const res = await fetch("http://localhost:3000/api/employees");
+    const data = await res.json();
+    return data;
+  };
+
   const addProduct = async (product) => {
+    // const data = await fetcher("", "post", product)
     const res = await fetch("http://localhost:3000/api/products", {
       method: "POST",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ product }), // converts a JavaScript value to a JSON string
     });
     const data = await res.json();
-    setProducts([...products, data]);
+    if (res.status === 201) {
+      setProducts([...products, data]);
+    } else {
+      alert("Something went wrong!");
+    }
   };
 
   const deleteProduct = async (id) => {
     console.log(id);
-    const response = await fetch(`/api/products/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/products?id=${id}`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
       },
     });
-    // setTasks(tasks.filter((task) => task.id !== id));
+    if (res.status === 200) {
+      setProducts(products.filter((product) => product.productId !== id));
+    } else {
+      alert("Something went wrong!");
+    }
+  };
+
+  const updateProduct = async (product) => {
+    const res = await fetch(`http://localhost:3000/api/products`, {
+      method: "PUT",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ product }),
+    });
+
+    const data = await res.json();
+
+    if (res.status === 200) {
+      setProducts(
+        products.map((product) =>
+          product.productId === data.productId ? data : product
+        )
+      );
+    } else {
+      alert("Something went wrong!");
+    }
   };
 
   const handleChangeDevelopers = (e) => {
@@ -148,18 +166,12 @@ const Products = () => {
   const handleClickNewProduct = () => {
     setIsPanelSlide(true);
     setIsNewProduct(true);
+    handleClickClearFilters();
 
     setFormData({
       ...formData,
       productId: createId(products),
     });
-  };
-
-  const createId = (products) => {
-    const productIds = [];
-    products.map((product) => productIds.push(product.productId));
-
-    return Math.max(...productIds) + 1;
   };
 
   const handleClickEditProduct = (product) => {
@@ -173,7 +185,7 @@ const Products = () => {
     setIsSaveClicked(true);
 
     if (formValidation()) {
-      addProduct(formData);
+      isNewProduct ? addProduct(formData) : updateProduct(formData);
       clearFormData();
     }
   };
@@ -197,6 +209,61 @@ const Products = () => {
     console.log(id);
   };
 
+  const handleSearch = () => {
+    let filter = [];
+
+    if (filteredScrumMaster !== "" && filteredDeveloper === "") {
+      filter = products.filter(
+        (product) => product.scrumMasterName === filteredScrumMaster
+      );
+    }
+
+    if (filteredDeveloper !== "" && filteredScrumMaster === "") {
+      filter = products.filter(
+        (product) =>
+          product.developers.find(
+            (developer) => developer === filteredDeveloper
+          ) === filteredDeveloper
+      );
+    }
+
+    if (filteredScrumMaster !== "" && filteredDeveloper !== "") {
+      filter = products.filter(
+        (product) =>
+          product.scrumMasterName === filteredScrumMaster &&
+          product.developers.find(
+            (developer) => developer === filteredDeveloper
+          ) === filteredDeveloper
+      );
+    }
+
+    // const filter = products.filter(
+    //   (product) =>
+    //     product.scrumMasterName === filteredScrumMaster &&
+    //     product.developers.find(
+    //       (developer) => developer === filteredDeveloper
+    //     ) === filteredDeveloper
+    // );
+
+    setFilteredProducts(filter);
+  };
+
+  const handleSearchScrumMaster = (e) => {
+    setFilteredScrumMaster(e.value);
+    setIsFiltered(true);
+  };
+
+  const handleSearchDeveloper = (e) => {
+    setFilteredDeveloper(e.value);
+    setIsFiltered(true);
+  };
+
+  const handleClickClearFilters = () => {
+    setFilteredScrumMaster("");
+    setFilteredDeveloper("");
+    setIsFiltered(false);
+  };
+
   const dropDownValidationStyle = {
     control: (base, state) => ({
       ...base,
@@ -206,37 +273,103 @@ const Products = () => {
 
   return (
     <>
-      <div className="flex justify-end">
-        <BasicButton name="NEW PRODUCT" handleClick={handleClickNewProduct} />
+      {/* FILTER PRODUCTS SECTION */}
+      <div className="flex justify-between">
+        <div className="flex">
+          {/* Select Scrum Master drop-down list */}
+          <div>
+            <div>
+              <label>Select Scrum Master</label>
+            </div>
+            <Select
+              className="w-[200px] z-15"
+              id="long-value-select"
+              instanceId="long-value-select"
+              options={scrumMasters}
+              value={scrumMasters.filter((obj) =>
+                filteredScrumMaster.includes(obj.value)
+              )}
+              onChange={handleSearchScrumMaster}
+            />
+          </div>
+          {/* Select Developer drop-down list */}
+          <div className="ml-[10px]">
+            <div>
+              <label>Select Developer</label>
+            </div>
+            <Select
+              className="z-15 w-[200px]"
+              id="long-value-select"
+              instanceId="long-value-select"
+              options={developers}
+              value={developers.filter((obj) =>
+                filteredDeveloper.includes(obj.value)
+              )}
+              onChange={handleSearchDeveloper}
+            />
+          </div>
+          {/* Clear all filters button */}
+          <BasicButton
+            name="CLEAR FILTERS"
+            style="max-h-[40px] mt-auto ml-[10px]"
+            handleClick={handleClickClearFilters}
+          />
+        </div>
+        <div className="mt-auto">
+          <p className="font-medium p-2">
+            Number of Products:
+            <span className="p-2">
+              {isFiltered ? filteredProducts.length : products.length}
+            </span>
+          </p>
+        </div>
+        <BasicButton
+          name="NEW PRODUCT"
+          style="max-h-[40px] mt-auto"
+          handleClick={handleClickNewProduct}
+        />
       </div>
 
-      <table className="table-fixed border-spacing-10 border-gray-100 w-full mt-2">
-        <thead className="sticky top-0 z-10">
-          <tr className="bg-gray-200 h-10">
-            <th className="w-[5%] text-center">ID</th>
-            <th className="w-[15%] text-left">Product Name</th>
-            <th className="w-[15%] text-left">Product Owner</th>
-            <th className="w-[15%] text-left">Developer(s)</th>
-            <th className="w-[15%] text-left">Scrum Master</th>
-            <th className="w-[13%] text-center">Start Date</th>
-            <th className="w-[14%] text-center">Methodology</th>
-            <th className="w-[5%] text-center">Edit</th>
-            <th className="w-[5%] text-center">Del</th>
-          </tr>
-        </thead>
-        {/* Generates the product table rows */}
-        <tbody>
-          {products.map((product) => (
-            <Product
-              key={product.productId}
-              product={product}
-              handleClickEdit={handleClickEditProduct}
-              handleClickDelete={handleClickDeleteProduct}
-            />
-          ))}
-        </tbody>
-      </table>
-      {/* Sliding panel to add a new product or edit a product  */}
+      {/* PRODUCTS TABLE/LIST SECTION */}
+      <div className="overflow-y: scroll overflow-auto max-h-[650px] border-b">
+        <table className="table-fixed border-spacing-10 border-gray-100 w-full mt-2">
+          <thead className="sticky top-0">
+            <tr className="bg-gray-200 h-10">
+              <th className="w-[5%] text-center">ID</th>
+              <th className="w-[15%] text-left">Product Name</th>
+              <th className="w-[15%] text-left">Product Owner</th>
+              <th className="w-[15%] text-left">Developer(s)</th>
+              <th className="w-[15%] text-left">Scrum Master</th>
+              <th className="w-[13%] text-center">Start Date</th>
+              <th className="w-[14%] text-center">Methodology</th>
+              <th className="w-[5%] text-center">Edit</th>
+              <th className="w-[5%] text-center">Del</th>
+            </tr>
+          </thead>
+          {/* Generates the product table rows */}
+          <tbody>
+            {!isFiltered
+              ? products.map((product) => (
+                  <Product
+                    key={product.productId}
+                    product={product}
+                    handleClickEdit={handleClickEditProduct}
+                    handleClickDelete={handleClickDeleteProduct}
+                  />
+                ))
+              : filteredProducts.map((product) => (
+                  <Product
+                    key={product.productId}
+                    product={product}
+                    handleClickEdit={handleClickEditProduct}
+                    handleClickDelete={handleClickDeleteProduct}
+                  />
+                ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* SLIDING PANEL SECTION - ADD, EDIT PRODUCTS*/}
       <SlidingPanel isPanelSlide={isPanelSlide}>
         <div className="flex justify-between">
           <h2 className="text-lg font-medium text-gray-900 mb-10 mt-2">
@@ -259,7 +392,8 @@ const Products = () => {
             <CloseIcon />
           </button>
         </div>
-        {/* Form elements to add or edit a product */}
+
+        {/* Form to add or edit a product*/}
         <form className="flex flex-col justify-between h-[550px]">
           {/* ID field */}
           <div className="flex flex-col">
@@ -275,7 +409,7 @@ const Products = () => {
 
           {/* Product Name input field */}
           <div className="flex flex-col">
-            <div className="flex">
+            <div>
               <label>Product Name</label>
               <span className="text-red-500">*</span>
             </div>
@@ -293,13 +427,13 @@ const Products = () => {
               }
             ></input>
           </div>
+
           {/* Product Owner drop-down list */}
           <div>
-            <div className="flex">
+            <div>
               <label>Product Owner</label>
               <span className="text-red-500">*</span>
             </div>
-
             <Select
               styles={
                 isSaveClicked &&
@@ -320,11 +454,10 @@ const Products = () => {
 
           {/* Developers drop-down list */}
           <div>
-            <div className="flex">
+            <div>
               <label>Developers</label>
               <span className="text-red-500">*</span>
             </div>
-
             <Select
               styles={
                 isSaveClicked &&
@@ -351,11 +484,10 @@ const Products = () => {
 
           {/* Scrum Master drop-down list */}
           <div>
-            <div className="flex">
+            <div>
               <label>Scrum Master</label>
               <span className="text-red-500">*</span>
             </div>
-
             <Select
               styles={
                 isSaveClicked &&
@@ -376,11 +508,10 @@ const Products = () => {
 
           {/* Start Date date picker */}
           <div>
-            <div className="flex">
+            <div>
               <label>Start Date</label>
               <span className="text-red-500">*</span>
             </div>
-
             <DatePicker
               className={`border h-[36px] rounded w-full ${
                 isSaveClicked &&
@@ -403,11 +534,10 @@ const Products = () => {
 
           {/* Methodology drop-down list */}
           <div>
-            <div className="flex">
+            <div>
               <label>Methodology</label>
               <span className="text-red-500">*</span>
             </div>
-
             <Select
               styles={
                 isSaveClicked &&
@@ -425,6 +555,7 @@ const Products = () => {
               }
             />
           </div>
+
           {/* Save and Cancel buttons */}
           <div className="flex justify-end mt-2">
             <BasicButton
@@ -437,7 +568,8 @@ const Products = () => {
         </form>
       </SlidingPanel>
 
-      <pre>{JSON.stringify(formData)}</pre>
+      {/* <pre>{JSON.stringify(employees)}</pre> */}
+      {/* <p>developers{JSON.stringify(employees[0])}</p> */}
     </>
   );
 };
