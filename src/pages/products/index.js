@@ -12,6 +12,10 @@ import ErrorMessage from "@/components/ErrorMessage";
 
 const Products = () => {
   const MAX_DEVELOPERS = 5;
+  const FILTERED_FIELDS_NAMES = {
+    scrumMasters: "scrumMasters",
+    developers: "developers",
+  };
   const EMPTY_PRODUCT = {
     productId: 0,
     productName: "",
@@ -34,6 +38,7 @@ const Products = () => {
   const [filteredDeveloper, setFilteredDeveloper] = useState("");
   const [isFiltered, setIsFiltered] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [scrollElementId, setScrollElementId] = useState("");
 
   const methodologies = [
     { value: "Agile", label: "Agile" },
@@ -59,8 +64,20 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    handleSearch();
+    const filterProducts = () => {
+      isFiltered && handleFilter();
+    };
+    filterProducts();
   }, [filteredScrumMaster, filteredDeveloper, products]);
+
+  useEffect(() => {
+    const scrollToElement = () => {
+      document
+        .getElementById(`row_${scrollElementId}`)
+        ?.scrollIntoView({ behavior: "smooth" });
+    };
+    scrollToElement();
+  }, [products.length]);
 
   const fetchProducts = async () => {
     const res = await fetch("http://localhost:3000/api/products");
@@ -81,9 +98,11 @@ const Products = () => {
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ product }), // converts a JavaScript value to a JSON string
     });
-    const data = await res.json();
+
     if (res.status === 201) {
+      const data = await res.json();
       setProducts([...products, data]);
+      setScrollElementId(data.productId);
     } else {
       alert("Something went wrong!");
     }
@@ -99,6 +118,7 @@ const Products = () => {
     });
     if (res.status === 200) {
       setProducts(products.filter((product) => product.productId !== id));
+      setScrollElementId("");
     } else {
       alert("Something went wrong!");
     }
@@ -111,9 +131,8 @@ const Products = () => {
       body: JSON.stringify({ product }),
     });
 
-    const data = await res.json();
-
     if (res.status === 200) {
+      const data = await res.json();
       setProducts(
         products.map((product) =>
           product.productId === data.productId ? data : product
@@ -205,57 +224,30 @@ const Products = () => {
     return true;
   };
 
-  const handleClickDeleteProduct = (id) => {
-    deleteProduct(id);
-    console.log(id);
-  };
-
-  const handleSearch = () => {
-    let filter = [];
-
-    if (filteredScrumMaster !== "" && filteredDeveloper === "") {
-      filter = products.filter(
-        (product) => product.scrumMasterName === filteredScrumMaster
-      );
-    }
-
-    if (filteredDeveloper !== "" && filteredScrumMaster === "") {
-      filter = products.filter(
-        (product) =>
+  const handleFilter = () => {
+    const filter = products.filter((product) =>
+      filteredScrumMaster !== "" && filteredDeveloper === ""
+        ? product.scrumMasterName === filteredScrumMaster
+        : filteredDeveloper !== "" && filteredScrumMaster === ""
+        ? product.developers.find(
+            (developer) => developer === filteredDeveloper
+          ) === filteredDeveloper
+        : filteredScrumMaster !== "" && filteredDeveloper !== ""
+        ? product.scrumMasterName === filteredScrumMaster &&
           product.developers.find(
             (developer) => developer === filteredDeveloper
           ) === filteredDeveloper
-      );
-    }
-
-    if (filteredScrumMaster !== "" && filteredDeveloper !== "") {
-      filter = products.filter(
-        (product) =>
-          product.scrumMasterName === filteredScrumMaster &&
-          product.developers.find(
-            (developer) => developer === filteredDeveloper
-          ) === filteredDeveloper
-      );
-    }
-
-    // const filter = products.filter(
-    //   (product) =>
-    //     product.scrumMasterName === filteredScrumMaster &&
-    //     product.developers.find(
-    //       (developer) => developer === filteredDeveloper
-    //     ) === filteredDeveloper
-    // );
+        : []
+    );
 
     setFilteredProducts(filter);
   };
 
-  const handleSearchScrumMaster = (e) => {
-    setFilteredScrumMaster(e.value);
-    setIsFiltered(true);
-  };
+  const handleChangeFilter = (e, filteredField) => {
+    filteredField === FILTERED_FIELDS_NAMES.scrumMasters
+      ? setFilteredScrumMaster(e.value)
+      : setFilteredDeveloper(e.value);
 
-  const handleSearchDeveloper = (e) => {
-    setFilteredDeveloper(e.value);
     setIsFiltered(true);
   };
 
@@ -290,7 +282,9 @@ const Products = () => {
               value={scrumMasters.filter((obj) =>
                 filteredScrumMaster.includes(obj.value)
               )}
-              onChange={handleSearchScrumMaster}
+              onChange={(e) =>
+                handleChangeFilter(e, FILTERED_FIELDS_NAMES.scrumMasters)
+              }
             />
           </div>
           {/* Select Developer drop-down list */}
@@ -306,7 +300,9 @@ const Products = () => {
               value={developers.filter((obj) =>
                 filteredDeveloper.includes(obj.value)
               )}
-              onChange={handleSearchDeveloper}
+              onChange={(e) =>
+                handleChangeFilter(e, FILTERED_FIELDS_NAMES.developers)
+              }
             />
           </div>
           {/* Clear all filters button */}
@@ -355,7 +351,7 @@ const Products = () => {
                     key={product.productId}
                     product={product}
                     handleClickEdit={handleClickEditProduct}
-                    handleClickDelete={handleClickDeleteProduct}
+                    handleClickDelete={(id) => deleteProduct(id)}
                   />
                 ))
               : filteredProducts.map((product) => (
@@ -363,7 +359,7 @@ const Products = () => {
                     key={product.productId}
                     product={product}
                     handleClickEdit={handleClickEditProduct}
-                    handleClickDelete={handleClickDeleteProduct}
+                    handleClickDelete={(id) => deleteProduct(id)}
                   />
                 ))}
           </tbody>
@@ -395,9 +391,9 @@ const Products = () => {
         </div>
 
         {/* FORM - ADD, EDIT PRODUCTS*/}
-        <form className="flex flex-col justify-between h-[550px]">
+        <form className="flex flex-col ">
           {/* ID field */}
-          <div className="flex flex-col">
+          <div className="form-input">
             <label>ID</label>
             <input
               className="border rounded h-[36px] bg-gray-100 font-semibold"
@@ -409,7 +405,7 @@ const Products = () => {
           </div>
 
           {/* Product Name input field */}
-          <div className="flex flex-col">
+          <div className="form-input">
             <div className="flex">
               <label>Product Name</label>
               <span className="text-red-500">*</span>
@@ -433,7 +429,7 @@ const Products = () => {
           </div>
 
           {/* Product Owner drop-down list */}
-          <div>
+          <div className="form-drop-down-list">
             <div className="flex">
               <label>Product Owner</label>
               <span className="text-red-500">*</span>
@@ -460,7 +456,7 @@ const Products = () => {
           </div>
 
           {/* Developers drop-down list */}
-          <div>
+          <div className="form-drop-down-list">
             <div className="flex">
               <label>Developers</label>
               <span className="text-red-500">*</span>
@@ -493,7 +489,7 @@ const Products = () => {
           </div>
 
           {/* Scrum Master drop-down list */}
-          <div>
+          <div className="form-drop-down-list">
             <div className="flex">
               <label>Scrum Master</label>
               <span className="text-red-500">*</span>
@@ -520,7 +516,7 @@ const Products = () => {
           </div>
 
           {/* Start Date date picker */}
-          <div>
+          <div className="form-drop-down-list">
             <div className="flex">
               <label>Start Date</label>
               <span className="text-red-500">*</span>
@@ -549,7 +545,7 @@ const Products = () => {
           </div>
 
           {/* Methodology drop-down list */}
-          <div>
+          <div className="form-drop-down-list">
             <div className="flex">
               <label>Methodology</label>
               <span className="text-red-500">*</span>

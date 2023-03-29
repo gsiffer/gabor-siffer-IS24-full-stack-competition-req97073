@@ -5,7 +5,10 @@ import TrashIcon from "@/components/icons/TrashIcon";
 const Product = ({ product, handleClickEdit, handleClickDelete }) => {
   return (
     <>
-      <tr className="h-10 border-b border-gray-200">
+      <tr
+        id={`row_${product.productId}`}
+        className="h-10 border-b border-gray-200"
+      >
         <td className="text-center">{product.productId}</td>
         <td>{product.productName}</td>
         <td>{product.productOwnerName}</td>

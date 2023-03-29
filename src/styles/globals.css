@@ -42,6 +42,14 @@ input {
   padding: 2px 8px;
 }
 
+.form-input {
+  @apply flex flex-col mb-4
+}
+
+.form-drop-down-list {
+  @apply mb-4
+}
+
 .footer {
   background: #000;
   color: #fff;
