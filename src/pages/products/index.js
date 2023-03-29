@@ -8,6 +8,7 @@ import Product from "@/components/Product";
 import SlidingPanel from "@/components/SlidingPanel";
 import CloseIcon from "@/components/icons/CloseIcon";
 import { createId } from "@/helper";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const Products = () => {
   const MAX_DEVELOPERS = 5;
@@ -393,7 +394,7 @@ const Products = () => {
           </button>
         </div>
 
-        {/* Form to add or edit a product*/}
+        {/* FORM - ADD, EDIT PRODUCTS*/}
         <form className="flex flex-col justify-between h-[550px]">
           {/* ID field */}
           <div className="flex flex-col">
@@ -409,9 +410,12 @@ const Products = () => {
 
           {/* Product Name input field */}
           <div className="flex flex-col">
-            <div>
+            <div className="flex">
               <label>Product Name</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.productName.trim().length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <input
               className={`border rounded h-[36px] ${
@@ -430,9 +434,12 @@ const Products = () => {
 
           {/* Product Owner drop-down list */}
           <div>
-            <div>
+            <div className="flex">
               <label>Product Owner</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.productOwnerName.length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <Select
               styles={
@@ -454,9 +461,12 @@ const Products = () => {
 
           {/* Developers drop-down list */}
           <div>
-            <div>
+            <div className="flex">
               <label>Developers</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.developers.length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <Select
               styles={
@@ -484,9 +494,12 @@ const Products = () => {
 
           {/* Scrum Master drop-down list */}
           <div>
-            <div>
+            <div className="flex">
               <label>Scrum Master</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.scrumMasterName.length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <Select
               styles={
@@ -508,9 +521,12 @@ const Products = () => {
 
           {/* Start Date date picker */}
           <div>
-            <div>
+            <div className="flex">
               <label>Start Date</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.startDate.length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <DatePicker
               className={`border h-[36px] rounded w-full ${
@@ -534,9 +550,12 @@ const Products = () => {
 
           {/* Methodology drop-down list */}
           <div>
-            <div>
+            <div className="flex">
               <label>Methodology</label>
               <span className="text-red-500">*</span>
+              {isSaveClicked && formData.methodology.length === 0 && (
+                <ErrorMessage />
+              )}
             </div>
             <Select
               styles={
