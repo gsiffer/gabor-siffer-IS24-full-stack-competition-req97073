@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+/* BasicButton component 
+props:
+  - name: changes the button text
+  - style: adds more styles to the button
+*/
 const Button = ({ name, handleClick, style }) => {
   return (
     <>
@@ -13,7 +17,7 @@ const Button = ({ name, handleClick, style }) => {
     </>
   );
 };
-
+// Default text of the button
 Button.defaultProps = {
   name: "SUBMIT",
 };

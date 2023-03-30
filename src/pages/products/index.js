@@ -11,11 +11,15 @@ import { createId } from "@/helper";
 import ErrorMessage from "@/components/ErrorMessage";
 
 const Products = () => {
+  /* Stores the maximum number of people who can be selected
+  from the developers drop-down list on the form*/
   const MAX_DEVELOPERS = 5;
+  // Stores the filtered drop-down list names
   const FILTERED_FIELDS_NAMES = {
     scrumMasters: "scrumMasters",
     developers: "developers",
   };
+  // Stores an empty product object
   const EMPTY_PRODUCT = {
     productId: 0,
     productName: "",
@@ -25,19 +29,33 @@ const Products = () => {
     startDate: "",
     methodology: "",
   };
+  // Store all product objects
   const [products, setProducts] = useState([]);
+  // Store all developers name for the drop-down list on the form
   const [developers, setDevelopers] = useState([]);
+  // Store all scrum masters name for the drop-down list on the form
   const [scrumMasters, setScrumMasters] = useState([]);
+  // Store all product owners name for the drop-down list on the form
   const [productOwners, setProductOwners] = useState([]);
+  // Switcher to handle the right panel sliding effect
   const [isPanelSlide, setIsPanelSlide] = useState(false);
+  // Switcher to track if the 'New Product' button was clicked
   const [isNewProduct, setIsNewProduct] = useState(false);
+  // Switcher to track if the edit product icon button was clicked
   const [isEditProduct, setIsEditProduct] = useState(false);
+  // Switcher to track if the 'Save' button was clicked on the form
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  // Store a product object from the form. Initial value is an empty product.
   const [formData, setFormData] = useState(EMPTY_PRODUCT);
+  // Store scrum master selected from drop-down filter
   const [filteredScrumMaster, setFilteredScrumMaster] = useState("");
+  // Store developer selected from drop-down filter
   const [filteredDeveloper, setFilteredDeveloper] = useState("");
+  // Switcher to track if the product table is filtered
   const [isFiltered, setIsFiltered] = useState(false);
+  // Store all filtered product objects
   const [filteredProducts, setFilteredProducts] = useState([]);
+  // Store a new product row id to scroll to the element
   const [scrollElementId, setScrollElementId] = useState("");
 
   const methodologies = [
@@ -45,6 +63,7 @@ const Products = () => {
     { value: "Waterfall", label: "Waterfall" },
   ];
 
+  // Get all products upon initial loading of the page
   useEffect(() => {
     const getProducts = async () => {
       const res = await fetchProducts();
@@ -53,6 +72,8 @@ const Products = () => {
     getProducts();
   }, []);
 
+  /* Get all developers, scrum masters and product owners
+  upon initial loading of the page*/
   useEffect(() => {
     const getEmployees = async () => {
       const res = await fetchEmployees();
@@ -63,6 +84,7 @@ const Products = () => {
     getEmployees();
   }, []);
 
+  /* */
   useEffect(() => {
     const filterProducts = () => {
       isFiltered && handleFilter();

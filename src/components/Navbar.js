@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+// Navbar component
 const Navbar = () => {
   return (
     <nav>

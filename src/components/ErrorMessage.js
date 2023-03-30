@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+/* ErrorMessage component 
+props:
+  - message: changes the error message
+*/
 const ErrorMessage = ({message}) => {
   return (
     <>

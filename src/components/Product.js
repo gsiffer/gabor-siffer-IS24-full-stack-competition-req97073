@@ -1,7 +1,11 @@
 import React from "react";
 import PencilSquareIcon from "@/components/icons/PencilSquareIcon";
 import TrashIcon from "@/components/icons/TrashIcon";
-
+/* Product component
+Displays one product line item
+props:
+  - product: one product list item
+*/
 const Product = ({ product, handleClickEdit, handleClickDelete }) => {
   return (
     <>
