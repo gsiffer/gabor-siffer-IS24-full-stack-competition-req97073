@@ -170,11 +170,11 @@ const Products = () => {
   // Delete product from the products API and set products list with the new data
   const deleteProduct = async (id) => {
     const res = await fetch(`http://localhost:3000/api/products?id=${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
 
     if (res.status === 200) {
       setProducts(products.filter((product) => product.productId !== id));
