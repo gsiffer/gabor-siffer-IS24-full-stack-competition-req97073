@@ -53,8 +53,6 @@ const Products = () => {
   const [filteredDeveloper, setFilteredDeveloper] = useState("");
   // Switcher to track if the product table is filtered
   const [isFiltered, setIsFiltered] = useState(false);
-  // Store all filtered product objects
-  const [filteredProducts, setFilteredProducts] = useState([]);
   // Store a new product row id to scroll to the element
   const [scrollElementId, setScrollElementId] = useState("");
   // Store a query string to filter the product table
@@ -79,9 +77,11 @@ const Products = () => {
   useEffect(() => {
     const getEmployees = async () => {
       const res = await fetchEmployees();
-      setDevelopers(res.developers);
-      setScrumMasters(res.scrumMasters);
-      setProductOwners(res.productOwners);
+      if (res !== null) {
+        setDevelopers(res.developers);
+        setScrumMasters(res.scrumMasters);
+        setProductOwners(res.productOwners);
+      }
     };
     getEmployees();
   }, []);
@@ -133,10 +133,7 @@ const Products = () => {
       const data = await res.json();
       return data;
     } else {
-      const data = await res.json();
-      console.log(data.msg);
       alert("Something went wrong!");
-      
     }
     return [];
   };
@@ -144,8 +141,13 @@ const Products = () => {
   // Fetch all employees from employees API
   const fetchEmployees = async () => {
     const res = await fetch("http://localhost:3000/api/employees");
-    const data = await res.json();
-    return data;
+    if (res.status === 200) {
+      const data = await res.json();
+      return data;
+    } else {
+      alert("Something went wrong!");
+    }
+    return null;
   };
 
   // Add product to the products API and set products list with the new data
@@ -167,7 +169,6 @@ const Products = () => {
 
   // Delete product from the products API and set products list with the new data
   const deleteProduct = async (id) => {
-    console.log(id);
     const res = await fetch(`http://localhost:3000/api/products?id=${id}`, {
       method: "DELETE",
       headers: {
