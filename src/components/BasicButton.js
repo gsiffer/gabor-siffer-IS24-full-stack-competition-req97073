@@ -9,6 +9,7 @@ const Button = ({ name, handleClick, style }) => {
   return (
     <>
       <button
+        type="button"
         className={`bg-blue-500 text-white rounded-md px-4 py-2 ${style}`}
         onClick={handleClick}
       >

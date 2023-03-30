@@ -57,6 +57,8 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   // Store a new product row id to scroll to the element
   const [scrollElementId, setScrollElementId] = useState("");
+  // Store a query string to filter the product table
+  const [queryString, setQueryString] = useState("");
 
   const methodologies = [
     { value: "Agile", label: "Agile" },
@@ -73,52 +75,85 @@ const Products = () => {
   }, []);
 
   /* Get all developers, scrum masters and product owners
-  upon initial loading of the page*/
+  for drop-down list upon initial loading of the page*/
   useEffect(() => {
     const getEmployees = async () => {
       const res = await fetchEmployees();
-      setDevelopers(res[0].developers);
-      setScrumMasters(res[0].scrumMasters);
-      setProductOwners(res[0].productOwners);
+      setDevelopers(res.developers);
+      setScrumMasters(res.scrumMasters);
+      setProductOwners(res.productOwners);
     };
     getEmployees();
   }, []);
 
-  /* */
+  /* Set query string if one of the filters drop-down list is changed
+  or the product table filtered and one of the filtered products was edited.*/
   useEffect(() => {
-    const filterProducts = () => {
-      isFiltered && handleFilter();
+    const getQueryString = () => {
+      isFiltered &&
+        setQueryString(
+          filteredScrumMaster !== ""
+            ? `?scrum=${filteredScrumMaster}${
+                filteredDeveloper !== "" ? `&dev=${filteredDeveloper}` : ""
+              }`
+            : filteredDeveloper !== ""
+            ? `?dev=${filteredDeveloper}`
+            : ""
+        );
     };
-    filterProducts();
+    getQueryString();
   }, [filteredScrumMaster, filteredDeveloper, products]);
 
+  /* Get all filtered products if queryString is changed and not empty */
+  useEffect(() => {
+    const getfilterProducts = async () => {
+      if (queryString !== "") {
+        const res = await queryProducts(queryString);
+        setProducts(res);
+      }
+    };
+    getfilterProducts();
+  }, [queryString]);
+
+  /* Scroll to the product when a new product was added to the products list */
   useEffect(() => {
     const scrollToElement = () => {
-      document
-        .getElementById(`row_${scrollElementId}`)
-        ?.scrollIntoView({ behavior: "smooth" });
+      !isFiltered &&
+        document
+          .getElementById(`row_${scrollElementId}`)
+          ?.scrollIntoView({ behavior: "smooth" });
     };
     scrollToElement();
   }, [products.length]);
 
+  // Fetch all products from products API
   const fetchProducts = async () => {
     const res = await fetch("http://localhost:3000/api/products");
-    const data = await res.json();
-    return data;
+    if (res.status === 200) {
+      const data = await res.json();
+      return data;
+    } else {
+      const data = await res.json();
+      console.log(data.msg);
+      alert("Something went wrong!");
+      
+    }
+    return [];
   };
 
+  // Fetch all employees from employees API
   const fetchEmployees = async () => {
     const res = await fetch("http://localhost:3000/api/employees");
     const data = await res.json();
     return data;
   };
 
+  // Add product to the products API and set products list with the new data
   const addProduct = async (product) => {
-    // const data = await fetcher("", "post", product)
     const res = await fetch("http://localhost:3000/api/products", {
       method: "POST",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ product }), // converts a JavaScript value to a JSON string
+      body: JSON.stringify({ product }),
     });
 
     if (res.status === 201) {
@@ -130,6 +165,7 @@ const Products = () => {
     }
   };
 
+  // Delete product from the products API and set products list with the new data
   const deleteProduct = async (id) => {
     console.log(id);
     const res = await fetch(`http://localhost:3000/api/products?id=${id}`, {
@@ -138,6 +174,7 @@ const Products = () => {
         "Content-type": "application/json",
       },
     });
+
     if (res.status === 200) {
       setProducts(products.filter((product) => product.productId !== id));
       setScrollElementId("");
@@ -146,6 +183,7 @@ const Products = () => {
     }
   };
 
+  // Add product to the products API and set products list with the new data
   const updateProduct = async (product) => {
     const res = await fetch(`http://localhost:3000/api/products`, {
       method: "PUT",
@@ -165,6 +203,21 @@ const Products = () => {
     }
   };
 
+  // Filter products and return the filtered products data
+  const queryProducts = async (queryString) => {
+    const res = await fetch(`http://localhost:3000/api/products${queryString}`);
+
+    if (res.status === 200) {
+      const data = await res.json();
+      return data;
+    } else {
+      alert("Something went wrong!");
+    }
+    return [];
+  };
+
+  /* Set formData developers attribute when the form developers 
+  drop-down list is changed */
   const handleChangeDevelopers = (e) => {
     setFormData({
       ...formData,
@@ -172,6 +225,8 @@ const Products = () => {
     });
   };
 
+  /* Set formData startDate attribute when the form start date 
+  drop-down list is changed */
   const handleChangeStartDate = (date) => {
     if (date != null) {
       const year = date.getUTCFullYear().toString();
@@ -209,11 +264,6 @@ const Products = () => {
     setIsPanelSlide(true);
     setIsNewProduct(true);
     handleClickClearFilters();
-
-    setFormData({
-      ...formData,
-      productId: createId(products),
-    });
   };
 
   const handleClickEditProduct = (product) => {
@@ -232,6 +282,7 @@ const Products = () => {
     }
   };
 
+  // Validate completion of required fields
   const formValidation = () => {
     if (
       formData.productName.trim().length === 0 ||
@@ -246,36 +297,21 @@ const Products = () => {
     return true;
   };
 
-  const handleFilter = () => {
-    const filter = products.filter((product) =>
-      filteredScrumMaster !== "" && filteredDeveloper === ""
-        ? product.scrumMasterName === filteredScrumMaster
-        : filteredDeveloper !== "" && filteredScrumMaster === ""
-        ? product.developers.find(
-            (developer) => developer === filteredDeveloper
-          ) === filteredDeveloper
-        : filteredScrumMaster !== "" && filteredDeveloper !== ""
-        ? product.scrumMasterName === filteredScrumMaster &&
-          product.developers.find(
-            (developer) => developer === filteredDeveloper
-          ) === filteredDeveloper
-        : []
-    );
-
-    setFilteredProducts(filter);
-  };
-
   const handleChangeFilter = (e, filteredField) => {
+    setIsFiltered(true);
+
     filteredField === FILTERED_FIELDS_NAMES.scrumMasters
       ? setFilteredScrumMaster(e.value)
       : setFilteredDeveloper(e.value);
-
-    setIsFiltered(true);
   };
 
-  const handleClickClearFilters = () => {
+  const handleClickClearFilters = async () => {
+    const res = await fetchProducts();
+    setProducts(res);
+
     setFilteredScrumMaster("");
     setFilteredDeveloper("");
+    setQueryString("");
     setIsFiltered(false);
   };
 
@@ -309,6 +345,7 @@ const Products = () => {
               }
             />
           </div>
+
           {/* Select Developer drop-down list */}
           <div className="ml-[10px]">
             <div>
@@ -327,24 +364,29 @@ const Products = () => {
               }
             />
           </div>
+
           {/* Clear all filters button */}
           <BasicButton
             name="CLEAR FILTERS"
-            style="max-h-[40px] mt-auto ml-[10px]"
+            style="max-h-[40px] mt-auto ml-[10px] hover:bg-blue-600"
             handleClick={handleClickClearFilters}
           />
         </div>
+
+        {/* Number of products */}
         <div className="mt-auto">
           <p className="font-medium p-2">
             Number of Products:
             <span className="p-2">
-              {isFiltered ? filteredProducts.length : products.length}
+              {isFiltered ? products.length : products.length}
             </span>
           </p>
         </div>
+
+        {/* New product button */}
         <BasicButton
           name="NEW PRODUCT"
-          style="max-h-[40px] mt-auto"
+          style="max-h-[40px] mt-auto hover:bg-blue-600"
           handleClick={handleClickNewProduct}
         />
       </div>
@@ -367,23 +409,14 @@ const Products = () => {
           </thead>
           {/* Generates the product table rows */}
           <tbody>
-            {!isFiltered
-              ? products.map((product) => (
-                  <Product
-                    key={product.productId}
-                    product={product}
-                    handleClickEdit={handleClickEditProduct}
-                    handleClickDelete={(id) => deleteProduct(id)}
-                  />
-                ))
-              : filteredProducts.map((product) => (
-                  <Product
-                    key={product.productId}
-                    product={product}
-                    handleClickEdit={handleClickEditProduct}
-                    handleClickDelete={(id) => deleteProduct(id)}
-                  />
-                ))}
+            {products.map((product) => (
+              <Product
+                key={product.productId}
+                product={product}
+                handleClickEdit={handleClickEditProduct}
+                handleClickDelete={(id) => deleteProduct(id)}
+              />
+            ))}
           </tbody>
         </table>
       </div>
@@ -598,14 +631,18 @@ const Products = () => {
             <BasicButton
               handleClick={handleClickSave}
               name="SAVE"
-              style="mr-2"
+              style="mr-2 hover:bg-blue-600"
             />
-            <BasicButton name="CANCEL" handleClick={handleClickCancel} />
+            <BasicButton
+              name="CANCEL"
+              handleClick={handleClickCancel}
+              style="hover:bg-blue-600"
+            />
           </div>
         </form>
       </SlidingPanel>
 
-      {/* <pre>{JSON.stringify(employees)}</pre> */}
+      {/* <pre>{JSON.stringify(formData)}</pre> */}
       {/* <p>developers{JSON.stringify(employees[0])}</p> */}
     </>
   );
