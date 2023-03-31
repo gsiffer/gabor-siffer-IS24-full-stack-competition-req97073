@@ -1,15 +1,6 @@
 import { products } from "../../../../data/products";
 import { createId } from "@/helper";
 
-/**
- * @swagger
- * /api/products:
- *   get:
- *     description: Returns the hello world
- *     responses:
- *       200:
- *         description: hello world
- */
 export default function handler(req, res) {
   // GET request
   if (req.method === "GET") {
