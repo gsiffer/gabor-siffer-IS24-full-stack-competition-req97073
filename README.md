@@ -5,17 +5,18 @@ Users access data through the UI and can perform four basic operations **(CRUD)*
 
 ## Installing the IMB Catalogue
 
-- Clone the project
-- This project require Node.js. [How to install](https://www.knowledgehut.com/blog/web-development/install-node-js-and-npm) 
-- In the project folder in the [Visual Studio Code](https://code.visualstudio.com/) terminal  run `npm install` then `npm run dev `
-- Go to http://localhost:3000/ in your browser
+To install the application, follow the steps described below: 
+- Clone the project.
+- This project require Node.js. [How to install](https://www.knowledgehut.com/blog/web-development/install-node-js-and-npm).
+- Access the project folder in the [Visual Studio Code](https://code.visualstudio.com/) terminal, then run `npm install`, then `npm run dev `.
+- Go to http://localhost:3000/ in your browser.
 
 ## API Component
 
 - API endpoins are utilized by the Frontend component.
 - All endpoints originate from `http://localhost:3000/api`.
 - User Authentication/Authorization is not required.
-- A health endpoint that returns a http 200 response indicates that the component is healthy
+- A health endpoint that returns a http 200 response indicates that the component is healthy.
 - All GET, POST, PUT and DELETE endpoints return the proper response codes when consumed.
 
 ##### Sample JSON Schema
@@ -39,14 +40,14 @@ Users access data through the UI and can perform four basic operations **(CRUD)*
 ```
 ## Frontend Component
 
-The frontend component has been developed using **React.js** library and **Next.js** framework . The frontend utilizes endpoints developed in the API to provide with basic CRUD actions described in the user stories provided.
+The frontend component has been developed using **React.js** library and **Next.js** framework . The frontend utilizes endpoints developed in the API to provide with basic CRUD actions described in the user stories below.
 
-The frontend comprises of a basic table or data table that displays information related to the listed Web Applications.
+The frontend comprises of a basic data table that displays information related to the listed Web Applications.
 
 ## User Stories
 
 #### User Story One - List functionality
-As Lisa, I want to see a list of all products that IMB currently develops or maintains in a list view. Given that I don't need to be an authorized user. When I navigate to the application landing page I can see a list of all products within IMB and all relevant information related to each product.
+As Lisa, I want to see a list of all products that IMB currently develops or maintains in a list view. Given that I don't need to be an authorized user. When I navigate to the application landing page, I can see a list of all products within IMB and all relevant information related to each product, as listed below.
 
 - Product Number
 - Product Name
@@ -79,9 +80,7 @@ As Lisa, I want to be able to add a product to the list of products that IMB is 
 - Click on save button will store new record.
 
 #### User Story Three - Edit/Add functionality
-As Alan, I want to be able to add or edit product related information so that I can ensure that product data is accurate.
-
-Given that I don't need to be an authorized user when I am on the list page and I click on an edit button. Then I am able to edit the following fields:
+As Alan, I want to be able to add or edit product related information so that I can ensure that product data is accurate. Given that I don't need to be an authorized user. When I am on the list page and I click on an edit button, then I am able to edit the following fields:
 
 - Scrum Master
 - Product Owner
@@ -93,25 +92,21 @@ Given that I don't need to be an authorized user when I am on the list page and 
 ##### Acceptance Criteria
 
 - Call to action button for saving exits.
-- I can see my changes saved immediately
-- Data created or edited is persistent through the event of a page refresh
+- I can see my changes saved immediately.
+- Data created or edited is persistent through the event of a page refresh.
 
-#### User Story Four - Search for scrum master functionality
-As Lisa, I want to search for a specific Scrum Master name so that I can see all of the products that they are currently working on.
-
-Given that I don't need to be an authorized user when I am on the list view page. Then I can search for a specific person in the Scrum Master role
+#### User Story Four - Search for Scrum Master functionality
+As Lisa, I want to search for a specific Scrum Master name, so that I can see all of the products that they are currently working on. Given that I don't need to be an authorized user. When I am on the list view page, then I can search for a specific person in the Scrum Master role.
 
 ##### Acceptance Criteria
 
-- All columns fit on the page
-- I can see a title for each column
-- I can see a total number of all products the Scrum Master is in
-- The only products listed include the Scrum Master Name
+- All columns fit on the page.
+- I can see a title for each column.
+- I can see a total number of all products the Scrum Master is in.
+- The only products listed include the Scrum Master Name.
 
 #### User Story Five - Search for developer functionality
-As Alan, I want to search for a specific Developer name so that I can see all of the products that they are currently working on.
-
-Given that I don't need to be an authorized user when I am on the list view page. I can search for a specific developer.
+As Alan, I want to search for a specific Developer name, so that I can see all of the products that they are currently working on. Given that I don't need to be an authorized user. When I am on the list view page, I can search for a specific developer.
 
 ##### Acceptance Criteria
 
