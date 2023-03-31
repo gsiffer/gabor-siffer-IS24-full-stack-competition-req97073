@@ -43,7 +43,7 @@ export default function handler(req, res) {
   }
 }
 
-// Handle GET request
+// Handle GET request to query data through query string
 const getRequest = (query) => {
   const filteredScrumMaster = "scrum" in query ? query.scrum : "";
   const filteredDeveloper = "dev" in query ? query.dev : "";
