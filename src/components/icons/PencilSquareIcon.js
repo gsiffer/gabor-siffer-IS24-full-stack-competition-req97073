@@ -1,6 +1,6 @@
 import React from "react";
 
-const PencilSquare = ({title}) => {
+const PencilSquareIcon = ({title}) => {
   return (
     <div title={title}>
       <svg
@@ -21,4 +21,4 @@ const PencilSquare = ({title}) => {
   );
 };
 
-export default PencilSquare;
+export default PencilSquareIcon;

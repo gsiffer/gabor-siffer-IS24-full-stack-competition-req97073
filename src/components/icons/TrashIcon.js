@@ -1,6 +1,6 @@
 import React from "react";
 
-const Trash = ({ title }) => {
+const TrashIcon = ({ title }) => {
   return (
     <div title={title}>
       <svg
@@ -21,4 +21,4 @@ const Trash = ({ title }) => {
   );
 };
 
-export default Trash;
+export default TrashIcon;

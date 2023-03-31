@@ -1,6 +1,6 @@
 import React from "react";
 
-const Close = () => {
+const CloseIcon = () => {
   return (
     <>
       <span className="sr-only">Close menu</span>
@@ -23,4 +23,4 @@ const Close = () => {
   );
 };
 
-export default Close;
+export default CloseIcon;
