@@ -5,6 +5,9 @@ Users access data through the UI and can perform four basic operations **(CRUD)*
 
 ## Installing the IMB Catalogue
 
+- Clone the project
+- On the terminal in the project folder run `npm install` then `npm run dev `
+
 ## API Component
 
 - API endpoins are utilized by the Frontend component.

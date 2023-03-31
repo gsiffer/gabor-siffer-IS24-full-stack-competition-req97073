@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Product from "@/components/Product";
 import SlidingPanel from "@/components/SlidingPanel";
 import CloseIcon from "@/components/icons/CloseIcon";
-import { createId } from "@/helper";
 import ErrorMessage from "@/components/ErrorMessage";
 
 const Products = () => {
@@ -169,13 +168,14 @@ const Products = () => {
 
   // Delete product from the products API and set products list with the new data
   const deleteProduct = async (id) => {
-    const res = await fetch(`http://localhost:3000/api/products?id=${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-
+    const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    // const data = await res.json();
+    // console.log(data);
     if (res.status === 200) {
       setProducts(products.filter((product) => product.productId !== id));
       setScrollElementId("");
@@ -642,9 +642,6 @@ const Products = () => {
           </div>
         </form>
       </SlidingPanel>
-
-      {/* <pre>{JSON.stringify(formData)}</pre> */}
-      {/* <p>developers{JSON.stringify(employees[0])}</p> */}
     </>
   );
 };

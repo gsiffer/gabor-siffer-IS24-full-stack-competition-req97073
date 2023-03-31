@@ -13,6 +13,7 @@ import { createId } from "@/helper";
 export default function handler(req, res) {
   // GET request
   if (req.method === "GET") {
+    
     try {
       if (req.url.includes("?")) {
         const filter = getRequest(req.query);
@@ -28,14 +29,6 @@ export default function handler(req, res) {
     try {
       const product = postRequest(req.body.product);
       res.status(201).json(product);
-    } catch (err) {
-      res.status(500).json({ status: 500, msg: `${err}` });
-    }
-    // DELETE request
-  } else if (req.method === "DELETE") {
-    try {
-      const deletedProduct = deleteRequest(req.query);
-      res.status(200).json(deletedProduct);
     } catch (err) {
       res.status(500).json({ status: 500, msg: `${err}` });
     }
@@ -79,20 +72,6 @@ const postRequest = (product) => {
   products.push(product);
 
   return product;
-};
-
-// Handle DELETE request
-const deleteRequest = (productId) => {
-  const deletedProduct = products.find(
-    (product) => product.productId === parseInt(productId.id)
-  );
-
-  const index = products.findIndex(
-    (product) => product.productId === parseInt(productId.id)
-  );
-  products.splice(index, 1);
-
-  return deletedProduct;
 };
 
 // Handle PUT request
