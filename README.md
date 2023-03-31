@@ -2,7 +2,7 @@
 
 The **IMB Web App Catalogue** project is a web application to track and manage web applications developed by the IMB team. Users access data through the UI and can perform four basic operations **(CRUD)** – **Create, Read, Update, and Delete**.
 
-**Bonus feature - Swagger documentation:** In development phase, the documentation runs in separate instance from the application. Refer to run instructions [below](#swagger-documentation).
+**Swagger documentation (bonus feature):** In development phase, the documentation runs in separate instance from the application. Refer to run instructions [below](#swagger-documentation).
 ## Installing the IMB Catalogue
 
 To install the application, follow the steps described below: 
