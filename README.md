@@ -2,7 +2,7 @@
 
 The **IMB Web App Catalogue** project is a web application to track and manage web applications developed by the IMB team. Users access data through the UI and can perform four basic operations **(CRUD)** – **Create, Read, Update, and Delete**.
 
-**Bonus feature - Swagger documentation:** In development phase, the documentation runs in separate instance from the application. Refer to run instructions [below](https://github.com/gsiffer/gabor-siffer-IS24-full-stack-competition-req97073#swagger-doc).
+**Bonus feature - Swagger documentation:** In development phase, the documentation runs in separate instance from the application. Refer to run instructions [below](#swagger-documentation).
 ## Installing the IMB Catalogue
 
 To install the application, follow the steps described below: 
@@ -115,11 +115,11 @@ As Alan, I want to search for a specific Developer name, so that I can see all o
 - I can see a total number of all products the Developer being searched for is working on.
 - Only products where the developer is assigned to are shown.
 
-## Bonus feature: Swagger Documentation {#swagger-doc}
+## Swagger Documentation 
 
 - Open the Visual Studio Code terminal.
 - Navigate to the the project folder.
-- Stop `http://localhost:3000/` port from running if it used (`Ctrl-C`).
+- Stop `http://localhost:3000/` port from running if used (`Ctrl-C`).
 - Run `npm start`.
 - Go to http://localhost:3000/api/api-docs/
 
