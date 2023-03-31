@@ -6,7 +6,9 @@ Users access data through the UI and can perform four basic operations **(CRUD)*
 ## Installing the IMB Catalogue
 
 - Clone the project
-- On the terminal in the project folder run `npm install` then `npm run dev `
+- This project require Node.js. [How to install](https://www.knowledgehut.com/blog/web-development/install-node-js-and-npm) 
+- In the project folder in the [Visual Studio Code](https://code.visualstudio.com/) terminal  run `npm install` then `npm run dev `
+- Go to http://localhost:3000/ in your browser
 
 ## API Component
 
@@ -118,29 +120,5 @@ Given that I don't need to be an authorized user when I am on the list view page
 - I can see a total number of all products the Developer being searched for is working on.
 - Only products where the developer is assigned to are shown.
 
-
-
-
-
-
-
-
-
-*********************************************************
-[git-scm.com.](https://git-scm.com/downloads)
-For a refresher on using the Unix shell, look back at our [Shell Workshop](https://www.udacity.com/course/shell-workshop--ud206).
-If you'd like to learn more about Git, take a look at [our course about Git](https://www.udacity.com/course/version-control-with-git--ud123).
-
-
-_If Vagrant is successfully installed, you will be able to run `vagrant --version` in your terminal to see the version number._
-
-
-
-
-_$ cd Downloads/FSND-Virtual-Machine
-$ cd vagrant/_
- 
-
-#### Logging out and in
-If you type `exit` (or `Ctrl-D`) at the shell prompt inside the VM, you will be logged out, and put back into your host computer's shell. To log back in, make sure you're in the same directory and type `vagrant ssh` again. If you reboot your computer, you will need to run `vagrant` up to restart the VM.
-________________________________________
+#### LICENCE
+https://choosealicense.com/

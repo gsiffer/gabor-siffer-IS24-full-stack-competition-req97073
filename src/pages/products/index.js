@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import { useState, useEffect } from "react";
 import BasicButton from "@/components/BasicButton";
 import Select from "react-select";
@@ -174,8 +175,7 @@ const Products = () => {
         "Content-type": "application/json",
       },
     });
-    // const data = await res.json();
-    // console.log(data);
+
     if (res.status === 200) {
       setProducts(products.filter((product) => product.productId !== id));
       setScrollElementId("");
@@ -325,6 +325,11 @@ const Products = () => {
 
   return (
     <>
+      <Head>
+        <title>Products</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
       {/* FILTER PRODUCTS SECTION */}
       <div className="flex justify-between">
         <div className="flex">
