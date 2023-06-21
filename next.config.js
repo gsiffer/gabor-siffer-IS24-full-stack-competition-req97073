@@ -1,13 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-};
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
-module.exports = {
-  // Other Next.js configuration options...
+const nextConfig = {
+  reactStrictMode: true,
 
   webpack: (config, { isServer }) => {
     // Add the CopyWebpackPlugin to the plugins array
