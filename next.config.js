@@ -5,6 +5,36 @@ const path = require("path");
 
 const nextConfig = {
   reactStrictMode: true,
+
+  async headers() {
+    return [
+      {
+        source: "/data/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600",
+          },
+        ],
+      },
+    ];
+  },
 };
 
+// webpack: (config, { isServer }) => {
+//   // Add the CopyWebpackPlugin to the plugins array
+//   config.plugins.push(
+//     new CopyWebpackPlugin({
+//       patterns: [
+//         {
+//           from: path.join(__dirname, "data"),
+//           to: path.join(__dirname, ".next/data"),
+//         },
+//       ],
+//     })
+//   );
+
+//   // Return the updated configuration
+//   return config;
+// },
 module.exports = nextConfig;
