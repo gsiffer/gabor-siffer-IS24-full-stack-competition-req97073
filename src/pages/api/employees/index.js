@@ -1,4 +1,4 @@
-import { employees } from "../../../../data/employees";
+import { employees } from "../../../../public/data/employees";
 
 export default function handler(req, res) {
   if (req.method === "GET") {
