@@ -6,22 +6,22 @@ const path = require("path");
 const nextConfig = {
   reactStrictMode: true,
 
-  webpack: (config, { isServer }) => {
-    // Add the CopyWebpackPlugin to the plugins array
-    config.plugins.push(
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, "data"),
-            to: path.join(__dirname, ".next/server/data"),
-          },
-        ],
-      })
-    );
+  // webpack: (config, { isServer }) => {
+  //   // Add the CopyWebpackPlugin to the plugins array
+  //   config.plugins.push(
+  //     new CopyWebpackPlugin({
+  //       patterns: [
+  //         {
+  //           from: path.join(__dirname, "data"),
+  //           to: path.join(__dirname, ".next/server/data"),
+  //         },
+  //       ],
+  //     })
+  //   );
 
-    // Return the updated configuration
-    return config;
-  },
+  //   // Return the updated configuration
+  //   return config;
+  // },
 
   // async headers() {
   //   return [
