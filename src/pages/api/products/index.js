@@ -1,4 +1,4 @@
-import { products } from "../../../data/products";
+import { products } from "../../../../data/products";
 import { createId } from "@/helper";
 
 export default function handler(req, res) {
