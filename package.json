@@ -1,11 +1,13 @@
+
+
 {
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev":  "node server.js",
     "build": "next build",
-    "start": "node server.js",
+    "start": "next dev", 
     "lint": "next lint"
   },
   "dependencies": {
