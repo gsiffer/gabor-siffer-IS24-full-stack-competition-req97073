@@ -330,114 +330,126 @@ const Products = () => {
         <title>Products</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      {/* FILTER PRODUCTS SECTION */}
-      <div className="flex justify-between">
-        <div className="flex">
-          {/* Select Scrum Master drop-down list */}
-          <div>
+      <div className="hidden max-[1200px]:block">
+        <div className="m-auto">
+          <p className="text-center font-semibold text-2xl mb-[100px]">
+            Target devices with a screen width of 1200px
+          </p>
+          <img
+            className="m-auto"
+            src="/under-constraction.jpg"
+            alt="under-construction"
+          />
+        </div>
+      </div>
+      <div className="hidden min-[1200px]:block">
+        {/* FILTER PRODUCTS SECTION */}
+        <div className="flex justify-between">
+          <div className="flex">
+            {/* Select Scrum Master drop-down list */}
             <div>
-              <label>Select Scrum Master</label>
+              <div>
+                <label>Select Scrum Master</label>
+              </div>
+              <Select
+                className="w-[200px] z-15"
+                id="long-value-select"
+                instanceId="long-value-select"
+                options={scrumMasters}
+                value={scrumMasters.filter((obj) =>
+                  filteredScrumMaster.includes(obj.value)
+                )}
+                onChange={(e) =>
+                  handleChangeFilter(e, FILTERED_FIELDS_NAMES.scrumMasters)
+                }
+              />
             </div>
-            <Select
-              className="w-[200px] z-15"
-              id="long-value-select"
-              instanceId="long-value-select"
-              options={scrumMasters}
-              value={scrumMasters.filter((obj) =>
-                filteredScrumMaster.includes(obj.value)
-              )}
-              onChange={(e) =>
-                handleChangeFilter(e, FILTERED_FIELDS_NAMES.scrumMasters)
-              }
+
+            {/* Select Developer drop-down list */}
+            <div className="ml-[10px]">
+              <div>
+                <label>Select Developer</label>
+              </div>
+              <Select
+                className="z-15 w-[200px]"
+                id="long-value-select"
+                instanceId="long-value-select"
+                options={developers}
+                value={developers.filter((obj) =>
+                  filteredDeveloper.includes(obj.value)
+                )}
+                onChange={(e) =>
+                  handleChangeFilter(e, FILTERED_FIELDS_NAMES.developers)
+                }
+              />
+            </div>
+
+            {/* Clear all filters button */}
+            <BasicButton
+              name="CLEAR FILTERS"
+              style="max-h-[40px] mt-auto ml-[10px] hover:bg-blue-600"
+              handleClick={handleClickClearFilters}
             />
           </div>
 
-          {/* Select Developer drop-down list */}
-          <div className="ml-[10px]">
-            <div>
-              <label>Select Developer</label>
-            </div>
-            <Select
-              className="z-15 w-[200px]"
-              id="long-value-select"
-              instanceId="long-value-select"
-              options={developers}
-              value={developers.filter((obj) =>
-                filteredDeveloper.includes(obj.value)
-              )}
-              onChange={(e) =>
-                handleChangeFilter(e, FILTERED_FIELDS_NAMES.developers)
-              }
-            />
+          {/* Number of products */}
+          <div className="mt-auto">
+            <p className="font-medium p-2">
+              Number of Products:
+              <span className="p-2">
+                {isFiltered ? products.length : products.length}
+              </span>
+            </p>
           </div>
 
-          {/* Clear all filters button */}
+          {/* New product button */}
           <BasicButton
-            name="CLEAR FILTERS"
-            style="max-h-[40px] mt-auto ml-[10px] hover:bg-blue-600"
-            handleClick={handleClickClearFilters}
+            name="NEW PRODUCT"
+            style="max-h-[40px] mt-auto hover:bg-blue-600"
+            handleClick={handleClickNewProduct}
           />
         </div>
 
-        {/* Number of products */}
-        <div className="mt-auto">
-          <p className="font-medium p-2">
-            Number of Products:
-            <span className="p-2">
-              {isFiltered ? products.length : products.length}
-            </span>
-          </p>
+        {/* PRODUCTS TABLE/LIST SECTION */}
+        <div className="overflow-y: scroll overflow-auto max-h-[650px] border-b">
+          <table className="table-fixed border-spacing-10 border-gray-100 w-full mt-2">
+            <thead className="sticky top-0">
+              <tr className="bg-gray-200 h-10">
+                <th className="w-[5%] text-center">ID</th>
+                <th className="w-[15%] text-left">Product Name</th>
+                <th className="w-[15%] text-left">Product Owner</th>
+                <th className="w-[15%] text-left">Developer(s)</th>
+                <th className="w-[15%] text-left">Scrum Master</th>
+                <th className="w-[13%] text-center">Start Date</th>
+                <th className="w-[14%] text-center">Methodology</th>
+                <th className="w-[5%] text-center">Edit</th>
+                <th className="w-[5%] text-center">Del</th>
+              </tr>
+            </thead>
+            {/* Generates the product table rows */}
+            <tbody>
+              {products.map((product) => (
+                <Product
+                  key={product.productId}
+                  product={product}
+                  handleClickEdit={handleClickEditProduct}
+                  handleClickDelete={(id) => deleteProduct(id)}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* New product button */}
-        <BasicButton
-          name="NEW PRODUCT"
-          style="max-h-[40px] mt-auto hover:bg-blue-600"
-          handleClick={handleClickNewProduct}
-        />
-      </div>
-
-      {/* PRODUCTS TABLE/LIST SECTION */}
-      <div className="overflow-y: scroll overflow-auto max-h-[650px] border-b">
-        <table className="table-fixed border-spacing-10 border-gray-100 w-full mt-2">
-          <thead className="sticky top-0">
-            <tr className="bg-gray-200 h-10">
-              <th className="w-[5%] text-center">ID</th>
-              <th className="w-[15%] text-left">Product Name</th>
-              <th className="w-[15%] text-left">Product Owner</th>
-              <th className="w-[15%] text-left">Developer(s)</th>
-              <th className="w-[15%] text-left">Scrum Master</th>
-              <th className="w-[13%] text-center">Start Date</th>
-              <th className="w-[14%] text-center">Methodology</th>
-              <th className="w-[5%] text-center">Edit</th>
-              <th className="w-[5%] text-center">Del</th>
-            </tr>
-          </thead>
-          {/* Generates the product table rows */}
-          <tbody>
-            {products.map((product) => (
-              <Product
-                key={product.productId}
-                product={product}
-                handleClickEdit={handleClickEditProduct}
-                handleClickDelete={(id) => deleteProduct(id)}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* SLIDING PANEL SECTION - ADD, EDIT PRODUCTS*/}
-      <SlidingPanel isPanelSlide={isPanelSlide}>
-        <div className="flex justify-between">
-          <h2 className="text-lg font-medium text-gray-900 mb-10 mt-2">
-            {isNewProduct ? "Add New Product" : "Edit Product"}
-          </h2>
-          {/* 'X' button on the sliding panel */}
-          <button
-            type="button"
-            className="
+        {/* SLIDING PANEL SECTION - ADD, EDIT PRODUCTS*/}
+        <SlidingPanel isPanelSlide={isPanelSlide}>
+          <div className="flex justify-between">
+            <h2 className="text-lg font-medium text-gray-900 mb-10 mt-2">
+              {isNewProduct ? "Add New Product" : "Edit Product"}
+            </h2>
+            {/* 'X' button on the sliding panel */}
+            <button
+              type="button"
+              className="
                   w-10
                   h-10
                   flex
@@ -446,208 +458,209 @@ const Products = () => {
                   text-gray-400
                   hover:text-gray-500
                 "
-            onClick={handleClickCancel}
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        {/* FORM - ADD, EDIT PRODUCTS*/}
-        <form className="flex flex-col ">
-          {/* ID field */}
-          <div className="form-input">
-            <label>ID</label>
-            <input
-              className="border rounded h-[36px] bg-gray-100 font-semibold"
-              type="text"
-              value={formData.productId || ""}
-              readOnly
-              disabled
-            ></input>
+              onClick={handleClickCancel}
+            >
+              <CloseIcon />
+            </button>
           </div>
 
-          {/* Product Name input field */}
-          <div className="form-input">
-            <div className="flex">
-              <label>Product Name</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.productName.trim().length === 0 && (
-                <ErrorMessage />
-              )}
+          {/* FORM - ADD, EDIT PRODUCTS*/}
+          <form className="flex flex-col ">
+            {/* ID field */}
+            <div className="form-input">
+              <label>ID</label>
+              <input
+                className="border rounded h-[36px] bg-gray-100 font-semibold"
+                type="text"
+                value={formData.productId || ""}
+                readOnly
+                disabled
+              ></input>
             </div>
-            <input
-              className={`border rounded h-[36px] ${
-                isSaveClicked &&
-                formData.productName.trim().length === 0 &&
-                "border-red-500"
-              }`}
-              type="text"
-              value={formData.productName}
-              placeholder="Product Name"
-              onChange={(e) =>
-                setFormData({ ...formData, productName: e.target.value })
-              }
-            ></input>
-          </div>
 
-          {/* Product Owner drop-down list */}
-          <div className="form-drop-down-list">
-            <div className="flex">
-              <label>Product Owner</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.productOwnerName.length === 0 && (
-                <ErrorMessage />
-              )}
+            {/* Product Name input field */}
+            <div className="form-input">
+              <div className="flex">
+                <label>Product Name</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.productName.trim().length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <input
+                className={`border rounded h-[36px] ${
+                  isSaveClicked &&
+                  formData.productName.trim().length === 0 &&
+                  "border-red-500"
+                }`}
+                type="text"
+                value={formData.productName}
+                placeholder="Product Name"
+                onChange={(e) =>
+                  setFormData({ ...formData, productName: e.target.value })
+                }
+              ></input>
             </div>
-            <Select
-              styles={
-                isSaveClicked &&
-                formData.productOwnerName.length === 0 &&
-                dropDownValidationStyle
-              }
-              id="long-value-select"
-              instanceId="long-value-select"
-              options={productOwners}
-              value={productOwners.filter((obj) =>
-                formData.productOwnerName.includes(obj.value)
-              )} // set selected values
-              onChange={(e) =>
-                setFormData({ ...formData, productOwnerName: e.value })
-              }
-            />
-          </div>
 
-          {/* Developers drop-down list */}
-          <div className="form-drop-down-list">
-            <div className="flex">
-              <label>Developers</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.developers.length === 0 && (
-                <ErrorMessage />
-              )}
+            {/* Product Owner drop-down list */}
+            <div className="form-drop-down-list">
+              <div className="flex">
+                <label>Product Owner</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.productOwnerName.length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <Select
+                styles={
+                  isSaveClicked &&
+                  formData.productOwnerName.length === 0 &&
+                  dropDownValidationStyle
+                }
+                id="long-value-select"
+                instanceId="long-value-select"
+                options={productOwners}
+                value={productOwners.filter((obj) =>
+                  formData.productOwnerName.includes(obj.value)
+                )} // set selected values
+                onChange={(e) =>
+                  setFormData({ ...formData, productOwnerName: e.value })
+                }
+              />
             </div>
-            <Select
-              styles={
-                isSaveClicked &&
-                formData.developers.length === 0 &&
-                dropDownValidationStyle
-              }
-              id="long-value-select"
-              instanceId="long-value-select"
-              className="dropdown"
-              placeholder={`Select Options (max. ${MAX_DEVELOPERS})`}
-              value={developers.filter((obj) =>
-                formData.developers.includes(obj.value)
-              )} // set selected values
-              options={developers} // set list of the data
-              onChange={handleChangeDevelopers}
-              // assign onChange function
-              isOptionDisabled={() =>
-                formData.developers.length >= MAX_DEVELOPERS
-              } // only allow user to choose up to 5 options
-              isMulti
-              isClearable
-            />
-          </div>
 
-          {/* Scrum Master drop-down list */}
-          <div className="form-drop-down-list">
-            <div className="flex">
-              <label>Scrum Master</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.scrumMasterName.length === 0 && (
-                <ErrorMessage />
-              )}
+            {/* Developers drop-down list */}
+            <div className="form-drop-down-list">
+              <div className="flex">
+                <label>Developers</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.developers.length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <Select
+                styles={
+                  isSaveClicked &&
+                  formData.developers.length === 0 &&
+                  dropDownValidationStyle
+                }
+                id="long-value-select"
+                instanceId="long-value-select"
+                className="dropdown"
+                placeholder={`Select Options (max. ${MAX_DEVELOPERS})`}
+                value={developers.filter((obj) =>
+                  formData.developers.includes(obj.value)
+                )} // set selected values
+                options={developers} // set list of the data
+                onChange={handleChangeDevelopers}
+                // assign onChange function
+                isOptionDisabled={() =>
+                  formData.developers.length >= MAX_DEVELOPERS
+                } // only allow user to choose up to 5 options
+                isMulti
+                isClearable
+              />
             </div>
-            <Select
-              styles={
-                isSaveClicked &&
-                formData.scrumMasterName.length === 0 &&
-                dropDownValidationStyle
-              }
-              id="long-value-select"
-              instanceId="long-value-select"
-              options={scrumMasters}
-              value={scrumMasters.filter((obj) =>
-                formData.scrumMasterName.includes(obj.value)
-              )} // set selected values
-              onChange={(e) =>
-                setFormData({ ...formData, scrumMasterName: e.value })
-              }
-            />
-          </div>
 
-          {/* Start Date date picker */}
-          <div className="form-drop-down-list">
-            <div className="flex">
-              <label>Start Date</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.startDate.length === 0 && (
-                <ErrorMessage />
-              )}
+            {/* Scrum Master drop-down list */}
+            <div className="form-drop-down-list">
+              <div className="flex">
+                <label>Scrum Master</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.scrumMasterName.length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <Select
+                styles={
+                  isSaveClicked &&
+                  formData.scrumMasterName.length === 0 &&
+                  dropDownValidationStyle
+                }
+                id="long-value-select"
+                instanceId="long-value-select"
+                options={scrumMasters}
+                value={scrumMasters.filter((obj) =>
+                  formData.scrumMasterName.includes(obj.value)
+                )} // set selected values
+                onChange={(e) =>
+                  setFormData({ ...formData, scrumMasterName: e.value })
+                }
+              />
             </div>
-            <DatePicker
-              className={`border h-[36px] rounded w-full ${
-                isSaveClicked &&
-                formData.startDate.length === 0 &&
-                "border-red-500"
-              }`}
-              selected={Date.parse(formData.startDate)}
-              onChange={(date) => {
-                handleChangeStartDate(date);
-              }}
-              dateFormat="yyyy/MM/dd"
-              // minDate={new Date()}
-              placeholderText={"Select..."}
-              isClearable={isEditProduct ? false : true}
-              showYearDropdown
-              scrollableMonthYearDropdown
-              disabled={isEditProduct ? true : false}
-            />
-          </div>
 
-          {/* Methodology drop-down list */}
-          <div className="form-drop-down-list">
-            <div className="flex">
-              <label>Methodology</label>
-              <span className="text-red-500">*</span>
-              {isSaveClicked && formData.methodology.length === 0 && (
-                <ErrorMessage />
-              )}
+            {/* Start Date date picker */}
+            <div className="form-drop-down-list">
+              <div className="flex">
+                <label>Start Date</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.startDate.length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <DatePicker
+                className={`border h-[36px] rounded w-full ${
+                  isSaveClicked &&
+                  formData.startDate.length === 0 &&
+                  "border-red-500"
+                }`}
+                selected={Date.parse(formData.startDate)}
+                onChange={(date) => {
+                  handleChangeStartDate(date);
+                }}
+                dateFormat="yyyy/MM/dd"
+                // minDate={new Date()}
+                placeholderText={"Select..."}
+                isClearable={isEditProduct ? false : true}
+                showYearDropdown
+                scrollableMonthYearDropdown
+                disabled={isEditProduct ? true : false}
+              />
             </div>
-            <Select
-              styles={
-                isSaveClicked &&
-                formData.methodology.length === 0 &&
-                dropDownValidationStyle
-              }
-              id="long-value-select"
-              instanceId="long-value-select"
-              options={methodologies}
-              value={methodologies.filter((obj) =>
-                formData.methodology.includes(obj.value)
-              )} // set selected values
-              onChange={(e) =>
-                setFormData({ ...formData, methodology: e.value })
-              }
-            />
-          </div>
 
-          {/* Save and Cancel buttons */}
-          <div className="flex justify-end mt-2">
-            <BasicButton
-              handleClick={handleClickSave}
-              name="SAVE"
-              style="mr-2 hover:bg-blue-600"
-            />
-            <BasicButton
-              name="CANCEL"
-              handleClick={handleClickCancel}
-              style="hover:bg-blue-600"
-            />
-          </div>
-        </form>
-      </SlidingPanel>
+            {/* Methodology drop-down list */}
+            <div className="form-drop-down-list">
+              <div className="flex">
+                <label>Methodology</label>
+                <span className="text-red-500">*</span>
+                {isSaveClicked && formData.methodology.length === 0 && (
+                  <ErrorMessage />
+                )}
+              </div>
+              <Select
+                styles={
+                  isSaveClicked &&
+                  formData.methodology.length === 0 &&
+                  dropDownValidationStyle
+                }
+                id="long-value-select"
+                instanceId="long-value-select"
+                options={methodologies}
+                value={methodologies.filter((obj) =>
+                  formData.methodology.includes(obj.value)
+                )} // set selected values
+                onChange={(e) =>
+                  setFormData({ ...formData, methodology: e.value })
+                }
+              />
+            </div>
+
+            {/* Save and Cancel buttons */}
+            <div className="flex justify-end mt-2">
+              <BasicButton
+                handleClick={handleClickSave}
+                name="SAVE"
+                style="mr-2 hover:bg-blue-600"
+              />
+              <BasicButton
+                name="CANCEL"
+                handleClick={handleClickCancel}
+                style="hover:bg-blue-600"
+              />
+            </div>
+          </form>
+        </SlidingPanel>
+      </div>
     </>
   );
 };
