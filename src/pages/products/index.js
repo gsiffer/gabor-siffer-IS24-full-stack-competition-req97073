@@ -141,7 +141,7 @@ const Products = () => {
 
   // Fetch all employees from employees API
   const fetchEmployees = async () => {
-    const res = await fetch("http://localhost:3000/api/employees");
+    const res = await fetch("/api/employees");
     if (res.status === 200) {
       const data = await res.json();
       return data;
