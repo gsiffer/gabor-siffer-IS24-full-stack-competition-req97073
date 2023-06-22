@@ -129,7 +129,7 @@ const Products = () => {
 
   // Fetch all products from products API
   const fetchProducts = async () => {
-    const res = await fetch("http://localhost:3000/api/products");
+    const res = await fetch("/api/products");
     if (res.status === 200) {
       const data = await res.json();
       return data;
@@ -153,7 +153,7 @@ const Products = () => {
 
   // Add product to the products API and set products list with the new data
   const addProduct = async (product) => {
-    const res = await fetch("http://localhost:3000/api/products", {
+    const res = await fetch("/api/products", {
       method: "POST",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ product }),
@@ -170,7 +170,7 @@ const Products = () => {
 
   // Delete product from the products API and set products list with the new data
   const deleteProduct = async (id) => {
-    const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+    const res = await fetch(`/api/products/${id}`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -187,7 +187,7 @@ const Products = () => {
 
   // Add product to the products API and set products list with the new data
   const updateProduct = async (product) => {
-    const res = await fetch(`http://localhost:3000/api/products`, {
+    const res = await fetch(`/api/products`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({ product }),
@@ -207,7 +207,7 @@ const Products = () => {
 
   // Filter products and return the filtered products data
   const queryProducts = async (queryString) => {
-    const res = await fetch(`http://localhost:3000/api/products${queryString}`);
+    const res = await fetch(`/api/products${queryString}`);
 
     if (res.status === 200) {
       const data = await res.json();
