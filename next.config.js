@@ -13,7 +13,7 @@ const nextConfig = {
         patterns: [
           {
             from: path.join(__dirname, "data"),
-            to: path.join(__dirname, ".next/data"),
+            to: path.join(__dirname, ".next/server/data"),
           },
         ],
       })
