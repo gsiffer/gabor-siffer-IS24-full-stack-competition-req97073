@@ -77,6 +77,7 @@ const Products = () => {
   useEffect(() => {
     const getEmployees = async () => {
       const res = await fetchEmployees();
+
       if (res !== null) {
         setDevelopers(res.developers);
         setScrumMasters(res.scrumMasters);
