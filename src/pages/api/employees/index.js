@@ -1,3 +1,5 @@
+// @flow
+// @jsx React.DOM
 import { employees } from "../../../../data/employees";
 
 export default function handler(req, res) {
