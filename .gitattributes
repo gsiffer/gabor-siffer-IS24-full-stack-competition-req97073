@@ -1,2 +1,2 @@
 # *.js linguist-detectable=false
-*.jsx linguist-language=JavaScript
+*.js linguist-language=React
