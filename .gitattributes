@@ -1,3 +1,4 @@
 # *.css linguist-detectable=false
 # *.css linguist-language=CSS with Tailwind
-*.js linguist-language=jsx
+*.js linguist-language=JavaScript
+*.js linguist-detectable=React
